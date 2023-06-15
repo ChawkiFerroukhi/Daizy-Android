@@ -48,7 +48,7 @@ class LoginActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         Log.d("Login result: ", result)
                         // Login successful, start the main activity.
-                        //val intent = Intent(this@LoginActivity, ProfileActivity::class.java)
+                        val intent = Intent(this@LoginActivity, HomeActivity::class.java)
                         startActivity(intent)
                         finish()
                         loadingDialog.stopLoadingDialog()

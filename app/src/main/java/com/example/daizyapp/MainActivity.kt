@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.daizyapp.activities.LoginActivity
+import com.example.daizyapp.activities.HomeActivity
 import com.example.daizyapp.utils.Utility
 import java.util.Timer
 import kotlin.concurrent.schedule
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
             val isLoggedIn = sharedPref.getString(Utility.userKey, "")
 
             if(!isLoggedIn.isNullOrEmpty()){
-                //startActivity(Intent(applicationContext, ProfileActivity::class.java))
+                startActivity(Intent(applicationContext, HomeActivity::class.java))
             } else {
                 startActivity(Intent(applicationContext, LoginActivity::class.java))
             }

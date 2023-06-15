@@ -26,7 +26,7 @@ import kotlin.coroutines.suspendCoroutine
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var nameField: EditText
-    private lateinit var phoneField: EditText
+    private lateinit var lastnameField: EditText
     private lateinit var emailField: EditText
     private lateinit var passwordField: EditText
     private lateinit var passwordConfirmField: EditText
@@ -41,6 +41,7 @@ class RegisterActivity : AppCompatActivity() {
 
         nameField = findViewById(R.id.name)
         emailField = findViewById(R.id.email)
+        lastnameField = findViewById(R.id.phone)
         passwordField = findViewById(R.id.password)
         passwordConfirmField = findViewById(R.id.passwordConfirm)
         registerButton = findViewById(R.id.register_button)
@@ -54,7 +55,7 @@ class RegisterActivity : AppCompatActivity() {
                         withContext(Dispatchers.Main) {
                             Log.d("Register result", result)
 
-                            val intent = Intent(this@RegisterActivity, RegisterActivity::class.java)
+                            val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
                             startActivity(intent)
                             finish()
                             loadingDialog.stopLoadingDialog()
@@ -80,7 +81,8 @@ class RegisterActivity : AppCompatActivity() {
             val url = Utility.apiUrl + "/api/register"
             val requestBody = JSONObject()
 
-            requestBody.put("username", nameField.text.toString())
+            requestBody.put("firstname", nameField.text.toString())
+            requestBody.put("lastname", lastnameField.text.toString())
             requestBody.put("email", emailField.text.toString())
             requestBody.put("password", passwordField.text.toString())
             requestBody.put("confirmPassword", passwordConfirmField.text.toString())

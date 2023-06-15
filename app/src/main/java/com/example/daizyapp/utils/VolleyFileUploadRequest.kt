@@ -1,4 +1,4 @@
-package com.t2r2.volleyexample
+package com.example.daizyapp.utils
 
 import com.android.volley.*
 import com.android.volley.toolbox.HttpHeaderParser

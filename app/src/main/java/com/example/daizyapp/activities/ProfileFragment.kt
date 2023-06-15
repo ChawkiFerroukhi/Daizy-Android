@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +18,7 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.bumptech.glide.Glide
 import com.example.daizyapp.R
 import com.example.daizyapp.adapters.PostAdapter
 import com.example.daizyapp.models.GetPostResponse
@@ -33,8 +36,7 @@ import kotlin.coroutines.suspendCoroutine
 
 
 
-class HomeFragment : Fragment() {
-
+class ProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,16 +47,31 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val fullnameTextView = view.findViewById<TextView>(R.id.firstnameTextView)
+        val bioTextView = view.findViewById<TextView>(R.id.biographyTextView)
+        val avatarImageView = view.findViewById<ImageView>(R.id.imageView);
         val context = requireContext()
+        val gson = Gson()
+        val sharedPref: SharedPreferences = requireContext().getSharedPreferences("my_app_pref", Context.MODE_PRIVATE)
+        val user = sharedPref.getString(Utility.userKey, "")
+        val firstname = gson.fromJson(user, LoginResponse::class.java).user.firstname
+        val lastname = gson.fromJson(user, LoginResponse::class.java).user.lastname
+        val biography = gson.fromJson(user, LoginResponse::class.java).user.bio
+        val profilePicture = gson.fromJson(user, LoginResponse::class.java).user.profilePicture
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val result = getPosts(context)
                 withContext(Dispatchers.Main) {
+                    fullnameTextView.text = firstname + " " + lastname;
+                    bioTextView.text = biography;
+                    Glide.with(view)
+                        .load(profilePicture)
+                        .into(avatarImageView)
                     val postRecyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
                     postRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                     postRecyclerView.adapter = PostAdapter(result)
@@ -68,7 +85,7 @@ class HomeFragment : Fragment() {
     private suspend fun getPosts(context: Context) : List<Post> = suspendCoroutine { continuation ->
 
         val gson = Gson()
-        val url = Utility.apiUrl + "/api/posts"
+        val url = Utility.apiUrl + "/api/myprofileposts"
         val sharedPref : SharedPreferences = context.getSharedPreferences("my_app_pref", Context.MODE_PRIVATE)
         val user = sharedPref.getString(Utility.userKey, "")
         val token = gson.fromJson(user, LoginResponse::class.java).token

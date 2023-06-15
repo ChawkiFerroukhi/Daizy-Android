@@ -31,9 +31,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="Firstname"
                 android:inputType="textPersonName"
-                android:minHeight="48dp"
-                android:hint="Name" />
+                android:minHeight="48dp" />
+
+            <EditText
+                android:id="@+id/phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Lastname"
+                android:inputType="text"
+                android:minHeight="48dp" />
 
             <EditText
                 android:id="@+id/email"
@@ -42,15 +51,6 @@
                 android:layout_marginTop="16dp"
                 android:hint="Email"
                 android:inputType="textEmailAddress"
-                android:minHeight="48dp" />
-
-            <EditText
-                android:id="@+id/phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:hint="Phone"
-                android:inputType="phone"
                 android:minHeight="48dp" />
 
             <EditText

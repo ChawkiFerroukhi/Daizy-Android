@@ -3,15 +3,13 @@ package com.example.daizyapp.models
 data class User(
     val __v: Int,
     val _id: String,
-    val avatarUrl: String,
     val createdAt: String,
     val email: String,
-    val extras: String,
+    val profilePicture: String,
     val isVerified: Boolean,
-    val name: String,
+    val firstname: String,
+    val lastname: String,
+    val bio: String,
     val password: String,
-    val phone: String,
-    val publicid: String,
-    val role: String,
     val updatedAt: String
 )
