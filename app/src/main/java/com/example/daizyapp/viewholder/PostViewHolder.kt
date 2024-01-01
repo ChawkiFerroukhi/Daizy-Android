@@ -27,6 +27,7 @@ class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val createdAtTextView : TextView = itemView.findViewById(R.id.createdAtTextView);
     var postLikestextView : TextView = itemView.findViewById(R.id.postLikes);
     val likeButton : Button = itemView.findViewById(R.id.likeButton);
+    val deleteButton : Button = itemView.findViewById(R.id.deleteButton);
 
 
     fun bind(post: Post) {

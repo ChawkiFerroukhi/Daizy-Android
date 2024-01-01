@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
@@ -18,7 +19,7 @@ import com.example.daizyapp.viewholder.PostViewHolder
 import com.google.gson.Gson
 import org.w3c.dom.Text
 
-class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostViewHolder>() {
+class PostAdapter(private var posts: List<Post>) : RecyclerView.Adapter<PostViewHolder>() {
 
     private lateinit var context: Context
 
@@ -35,10 +36,30 @@ class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostView
         holder.likeButton.setOnClickListener {
             likePost(post, holder.postLikestextView, holder.likeButton)
         }
+
+
+        if (isCurrentUserPostOwner(post)) {
+            holder.deleteButton.visibility = View.VISIBLE
+            holder.deleteButton.setOnClickListener {
+                deletePost(post)
+            }
+        } else {
+            holder.deleteButton.visibility = View.GONE
+        }
     }
 
     override fun getItemCount(): Int {
         return posts.size
+    }
+
+    private fun isCurrentUserPostOwner(post: Post): Boolean {
+        val gson = Gson()
+        val sharedPref: SharedPreferences =
+            context.getSharedPreferences("my_app_pref", Context.MODE_PRIVATE)
+        val user = sharedPref.getString(Utility.userKey, "")
+        val currentUserId = gson.fromJson(user, LoginResponse::class.java).user._id
+
+        return currentUserId == post.user._id
     }
 
     private fun likePost(post: Post, postLikestextView: TextView, likeButton: Button) {
@@ -78,6 +99,40 @@ class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostView
             },
             { error ->
                 // Like/unlike failed, handle the error
+            }) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = token
+                return headers
+            }
+        }
+
+        queue.add(request)
+    }
+
+    private fun deletePost(post: Post) {
+        val gson = Gson()
+        val queue = Volley.newRequestQueue(context)
+        val url = "${Utility.apiUrl}/api/post/${post._id}/delete"
+        val sharedPref: SharedPreferences =
+            context.getSharedPreferences("my_app_pref", Context.MODE_PRIVATE)
+        val user = sharedPref.getString(Utility.userKey, "")
+        val token = gson.fromJson(user, LoginResponse::class.java).token
+
+        val request = object : JsonObjectRequest(Method.DELETE, url, null,
+            { response ->
+                // Post deletion successful, handle the response if needed
+
+                // Remove the post from the list and notify the adapter
+                val updatedPosts = posts.toMutableList()
+                updatedPosts.remove(post)
+                posts = updatedPosts.toList()
+                notifyDataSetChanged()
+
+                Log.d("Response", response.toString())
+            },
+            { error ->
+                // Post deletion failed, handle the error
             }) {
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
